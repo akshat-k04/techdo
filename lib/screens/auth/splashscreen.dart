@@ -6,6 +6,7 @@ import 'package:techdo/providers/authprovider.dart';
 import 'package:techdo/providers/todoprovider.dart';
 import 'package:techdo/screens/afterauth/HomeScreen.dart';
 import 'package:techdo/screens/auth/login.dart';
+import 'package:techdo/screens/customWidget/progress%20indicator.dart';
 
 class SplashScreen extends StatefulWidget{
   @override
@@ -16,7 +17,7 @@ class SplashScreen extends StatefulWidget{
 }
 
 class splashstate extends State<SplashScreen>{
-  bool fetch = false ;
+  bool fetch = true ;
   @override
   void process ()async{
     authprovider prder = Provider.of<authprovider>(context,listen: false);
@@ -28,9 +29,6 @@ class splashstate extends State<SplashScreen>{
     await Future.delayed( Duration(seconds: 1)) ;
     if(email!=null){
       String? hashmal = sp.getString('hashmail') ;
-      setState(() {
-        fetch= true ;
-      });
       await prder.setemailHashmail(email, hashmal!) ;
       await prder.getit() ;
       await prdert.getalltodos(email, hashmal!) ;
@@ -55,6 +53,9 @@ class splashstate extends State<SplashScreen>{
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueGrey,
+      body: Center(
+        child: (fetch==true)?LoadingWidget():SizedBox(),
+      ),
     ) ;
   }
   Route createRoute(String st) {

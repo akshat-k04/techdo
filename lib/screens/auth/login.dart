@@ -9,6 +9,7 @@ import 'package:techdo/screens/auth/forgetPassword.dart';
 import 'package:techdo/screens/auth/signup.dart';
 import 'package:techdo/screens/customWidget/inputField.dart';
 import 'package:techdo/screens/customWidget/button.dart';
+import 'package:techdo/screens/customWidget/progress%20indicator.dart';
 import 'package:techdo/screens/customWidget/toast.dart';
 
 class loginpg extends StatefulWidget {
@@ -22,7 +23,7 @@ class loginpg extends StatefulWidget {
 class loginstate extends State<loginpg>{
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
-
+  bool fetch = false ;
   @override
   Widget build(BuildContext context) {
     authprovider prder = Provider.of<authprovider>(context,listen: false);
@@ -60,8 +61,8 @@ class loginstate extends State<loginpg>{
                     const SizedBox(
                       height: 20,
                     ),
-                    WriteHere(hint:'E-mail', controller: _email, readonly: false,),
-                    WriteHere(hint: 'Password', controller: _password, readonly: false,) ,
+                    WriteHere(hint:'E-mail', controller: _email, readonly: fetch,),
+                    WriteHere(hint: 'Password', controller: _password, readonly: fetch,) ,
                     const SizedBox(
                       height: 20,
                     ),
@@ -69,8 +70,12 @@ class loginstate extends State<loginpg>{
                 ),
               ),
 
-              Container(
+              (fetch)?LoadingWidget():Container(
                 // height: 100,
+                // constraints: BoxConstraints(
+                //   minHeight: 100,
+                //   minWidth: 100
+                // ),
                 margin: const EdgeInsets.all(20),
                 decoration:  const BoxDecoration(
                   // color: Color(0xFFE5F9DB) ,
@@ -88,6 +93,9 @@ class loginstate extends State<loginpg>{
                     showToast(context, 'Enter a valid email address');
                   }
                   else {
+                    setState(() {
+                      fetch=true ;
+                    });
                     if (await prder.Userexistance(_email.text) == 'true') {
                       var tp =await prder.checkLogin(_email.text, _password.text) ;
                       if (tp =='false') {
@@ -100,6 +108,9 @@ class loginstate extends State<loginpg>{
                         sp.setString('email', _email.text);
                         sp.setString('hashmail',tp);
                         prdert.getalltodos(_email.text, tp) ;
+                        setState(() {
+                          fetch=false ;
+                        });
                         Navigator.of(context).pushAndRemoveUntil(createRoute("home"), (Route<dynamic> route) => false);
                       }
                     }
@@ -107,6 +118,9 @@ class loginstate extends State<loginpg>{
                       showToast(context, 'user not exist');
                     }
                   }
+                  setState(() {
+                    fetch=false ;
+                  });
                 }
                 ),
               ),

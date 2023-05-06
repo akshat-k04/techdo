@@ -4,6 +4,7 @@ import 'package:techdo/providers/authprovider.dart';
 import 'package:techdo/screens/auth/login.dart';
 import 'package:techdo/screens/customWidget/inputField.dart';
 import 'package:techdo/screens/customWidget/button.dart';
+import 'package:techdo/screens/customWidget/progress%20indicator.dart';
 import 'package:techdo/screens/customWidget/toast.dart';
 
 class otp extends StatefulWidget {
@@ -22,7 +23,7 @@ class otp extends StatefulWidget {
 
 class otpstate extends State<otp>{
   final TextEditingController _otp = TextEditingController();
-
+  bool fetch = false ;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +60,7 @@ class otpstate extends State<otp>{
                     const SizedBox(
                       height: 20,
                     ),
-                    WriteHere(hint: 'OTP', controller: _otp, readonly: false,),
+                    WriteHere(hint: 'OTP', controller: _otp, readonly: fetch,),
                     const SizedBox(
                       height: 20,
                     ),
@@ -67,7 +68,7 @@ class otpstate extends State<otp>{
                 ),
               ),
 
-              Container(
+              (fetch)?LoadingWidget():Container(
                 // height: 100,
                 margin: const EdgeInsets.all(20),
                 decoration:  const BoxDecoration(
@@ -82,9 +83,15 @@ class otpstate extends State<otp>{
                     showToast(context, "Input field can\'t be empty");
                   }
                   else {
+                    setState(() {
+                      fetch=true ;
+                    });
                     if (await prder.signup(
                         widget.email, widget.password, _otp.text,
                         widget.name) == 'true') {
+                      setState(() {
+                        fetch=false ;
+                      });
                       Navigator.of(context).pushAndRemoveUntil(
                           createRoute('login'), (Route<
                           dynamic> route) => false);
@@ -93,7 +100,9 @@ class otpstate extends State<otp>{
                       showToast(context, "OTP not match");
                     }
                   }
-
+                  setState(() {
+                    fetch=false ;
+                  });
                 }) ,
               ),
 

@@ -48,6 +48,9 @@ class authapiservice {
     var response = await http.post(requestUri,body: authmdl(email: email, otp: otp,password: password).forgetmap());
     print("recived data") ;
     var decoded = jsonDecode(response.body);
+    print(otp) ;
+    print(email) ;
+
     return decoded["bol"] ; //true or false
   }
   // return the true or false

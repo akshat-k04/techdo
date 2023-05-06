@@ -47,7 +47,7 @@ class authprovider with ChangeNotifier{
 
   Future<String> forgetpass(String email , String password,String otp)async {
 
-    var status = await authapiservice.forgetpass(email, password, otp)  ;
+    var status = await authapiservice.forgetpass(email, otp, password)  ;
     return status ;
   }
   // true or false

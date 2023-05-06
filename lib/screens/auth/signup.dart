@@ -5,6 +5,7 @@ import 'package:techdo/providers/authprovider.dart';
 import 'package:techdo/screens/auth/OTP.dart';
 import 'package:techdo/screens/customWidget/inputField.dart';
 import 'package:techdo/screens/customWidget/button.dart';
+import 'package:techdo/screens/customWidget/progress%20indicator.dart';
 import 'package:techdo/screens/customWidget/toast.dart';
 
 class signuppg extends StatefulWidget {
@@ -20,7 +21,7 @@ class loginstate extends State<signuppg>{
   final TextEditingController _password = TextEditingController();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _confpassword = TextEditingController();
-
+  bool fetch = false ;
   @override
   Widget build(BuildContext context) {
     authprovider prder = Provider.of<authprovider>(context,listen: false);
@@ -48,9 +49,9 @@ class loginstate extends State<signuppg>{
 
                 margin: const EdgeInsets.all(30),
                 decoration:  const BoxDecoration(
-                  color: Color(0xFFCCD6A6) ,
+                  // color: Color(0xFFCCD6A6) ,
 
-                  // color: Color(0xFFDBDFEA),
+                  color: Color(0xFFDBDFEA),
                   // color:  Colors.redAccent,
                   borderRadius: BorderRadius.all(Radius.elliptical(40, 30)) ,
                 ),
@@ -59,10 +60,10 @@ class loginstate extends State<signuppg>{
                     const SizedBox(
                       height: 20,
                     ),
-                    WriteHere(hint:'Name', controller: _name, readonly: false,),
-                    WriteHere(hint:'E-mail', controller: _email, readonly: false,),
-                    WriteHere(hint:'Password', controller: _password, readonly: false,),
-                    WriteHere(hint: 'Confirm Password', controller: _confpassword, readonly: false,) ,
+                    WriteHere(hint:'Name', controller: _name, readonly: fetch,),
+                    WriteHere(hint:'E-mail', controller: _email, readonly: fetch,),
+                    WriteHere(hint:'Password', controller: _password, readonly: fetch,),
+                    WriteHere(hint: 'Confirm Password', controller: _confpassword, readonly: fetch,) ,
                     const SizedBox(
                       height: 20,
                     ),
@@ -70,12 +71,12 @@ class loginstate extends State<signuppg>{
                 ), //info page
               ),
 
-              Container(
+              (fetch)?LoadingWidget():Container(
                 // height: 100,
                 margin: const EdgeInsets.all(20),
                 decoration:  const BoxDecoration(
-                  color: Color(0xFFCCD6A6) ,
-                  // color: Color(0xFFDBDFEA),
+                  // color: Color(0xFFCCD6A6) ,
+                  color: Color(0xFFDBDFEA),
                   // color: Colors.redAccent,
                   borderRadius: BorderRadius.all(Radius.elliptical(40, 30)) ,
                   // border: Border.all(color: const Color(0xFFE5F9DB) ),
@@ -94,15 +95,23 @@ class loginstate extends State<signuppg>{
 
                   }
                   else {
+                    setState(() {
+                      fetch=true ;
+                    });
                     if (await prder.Userexistance(_email.text) == 'true') {
                       showToast(context, 'user already exist');
                     }
                     else {
                       await prder.OTPsend(_email.text);
+                      setState(() {
+                        fetch=false ;
+                      });
                       Navigator.of(context).push(createRoute("otp"));
                     }
                   }
-
+                  setState(() {
+                    fetch=false ;
+                  });
                 },)  ,
               ), //button
 

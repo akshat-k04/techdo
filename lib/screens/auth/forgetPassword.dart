@@ -4,6 +4,7 @@ import 'package:techdo/providers/authprovider.dart';
 import 'package:techdo/screens/auth/login.dart';
 import 'package:techdo/screens/customWidget/inputField.dart';
 import 'package:techdo/screens/customWidget/button.dart';
+import 'package:techdo/screens/customWidget/progress%20indicator.dart';
 import 'package:techdo/screens/customWidget/toast.dart';
 
 class forget extends StatefulWidget {
@@ -41,7 +42,7 @@ class forgetstate extends State<forget>{
               const SizedBox(
                 height: 200,
                 width: 200,
-                child: Image(  image: AssetImage("assets/image/login.jpg"),),
+                child: Image(  image: AssetImage("assets/image/forgetpassword.jpg"),),
               ),// image
               const SizedBox(height: 40,),
               Container(
@@ -57,11 +58,11 @@ class forgetstate extends State<forget>{
                     const SizedBox(
                       height: 20,
                     ),
-                    (!showotp)?WriteHere(hint:'E-mail', controller: _email, readonly: false,):
+                    (!showotp)?WriteHere(hint:'E-mail', controller: _email, readonly: loading,):
                     Column(
                       children: [
-                        WriteHere(hint: 'OTP', controller: _otp, readonly: false,),
-                        WriteHere(hint: 'Password', controller: _password, readonly: false,),
+                        WriteHere(hint: 'OTP', controller: _otp, readonly: loading,),
+                        WriteHere(hint: 'Password', controller: _password, readonly: loading,),
                       ],
                     ),
                     const SizedBox(
@@ -71,7 +72,7 @@ class forgetstate extends State<forget>{
                 ),
               ),
 
-              Container(
+              (loading)?LoadingWidget():Container(
                 // height: 100,
                 margin: const EdgeInsets.all(20),
                 decoration:  const BoxDecoration(
@@ -86,8 +87,12 @@ class forgetstate extends State<forget>{
                     showToast(context, "Input field can\'t be empty");
                   }
                   else {
+                    setState(() {
+                      loading=true ;
+                    });
                     await prder.OTPsend(_email.text);
                     setState(() {
+                      loading= false ;
                       showotp = true;
                     });
                   }
@@ -97,8 +102,13 @@ class forgetstate extends State<forget>{
                         showToast(context, "Input field can\'t be empty");
                       }
                       else {
-                        if (await prder.forgetpass(
-                            _email.text, _password.text, _otp.text) == "true") {
+                        setState(() {
+                          loading=true ;
+                        });
+                        if (await prder.forgetpass(_email.text, _password.text, _otp.text) == "true") {
+                          setState(() {
+                            loading=false ;
+                          });
                           Navigator.of(context).pushAndRemoveUntil(createRoute(
                               "login"), (Route<dynamic> route) => false);
                         }
@@ -106,6 +116,9 @@ class forgetstate extends State<forget>{
                           showToast(context, "OTP not correct");
                         }
                       }
+                      setState(() {
+                        loading=false;
+                      });
                     }
                       ) ,
               ),

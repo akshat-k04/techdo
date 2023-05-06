@@ -35,8 +35,9 @@ class createtodo extends StatelessWidget{
               priority: (num==0)?"low":(num==1)?"modarate":"high" ,
               unqid:const Uuid().v1()
             ) ;
-            await prder.create(tod, authprder.hashmail) ;
             Navigator.push(context, MaterialPageRoute(builder: (context) => Home())) ;
+            await prder.create(tod, authprder.hashmail) ;
+            print("it runs") ;
           }
         },
         backgroundColor: Color(0xFF9BA4B5),

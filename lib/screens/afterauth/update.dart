@@ -41,8 +41,9 @@ class updatetodo extends StatelessWidget{
                 priority: (num==0)?"low":(num==1)?"modarate":"high" ,
                 unqid:tempe.unqid
             ) ;
-            await prder.update(tod, authprder.hashmail) ;
             Navigator.push(context, MaterialPageRoute(builder: (context) => Home())) ;
+            await prder.update(tod, authprder.hashmail) ;
+
           }
         },
         backgroundColor: Color(0xFF9BA4B5),
